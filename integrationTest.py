@@ -66,6 +66,22 @@ def test_get_report_missing_parameters(client):
 
     response = send_request('/api/report/test_report')
     assert response.status_code == 400
+def test_create_and_get_report(client):
+    report_name = "my_report"
+    report_config = {
+        "metrics": ["dailyAverage", "total"],
+        "users": ['02d4563d-5727-c811-b3b7-57a10f6be25a', '05227367-07f0-b3a5-8345-2513e0c45cca'],
+    }
 
+
+    response = client.post(f'/api/report/{report_name}', json=report_config)
+    assert response.status_code == 200
+
+
+    from_date = "2023-10-19T00:00"
+    to_date = "2023-10-19T23:59"
+    response = client.get(f'/api/report/{report_name}?from={from_date}&to={to_date}')
+    assert response.status_code == 200
+    report_data = response.get_json()
 if __name__ == '__main__':
     pytest.main()
