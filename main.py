@@ -299,4 +299,5 @@ if __name__ == '__main__':
     data_update_thread.daemon = True
     data_update_thread.start()
 
+
     app.run(debug=True)

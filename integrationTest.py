@@ -70,3 +70,4 @@ def test_get_report_missing_parameters(client):
 if __name__ == '__main__':
     pytest.main()
 
+
