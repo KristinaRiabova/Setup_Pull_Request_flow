@@ -136,6 +136,12 @@ def get_report(report_name):
 
     report_data = generate_report(report_config, from_date, to_date)
 
+
+    global_metrics = calculate_global_metrics(report_data, from_date, to_date)
+
+
+    report_data["globalMetrics"] = global_metrics
+
     return jsonify(report_data)
 
 
@@ -177,7 +183,55 @@ def generate_report(report_config, from_date, to_date):
 
     return report_data
 
+def calculate_global_metrics(report_data, from_date, to_date):
+    total_daily_average = 0
+    total_weekly_average = 0
+    total_min = float('inf')
+    total_max = 0
+    total_total = 0
+    total_users = len(report_data)
 
+    for user_metrics in report_data:
+        user_daily_average = 0
+        user_weekly_average = 0
+        user_min = float('inf')
+        user_max = 0
+        user_total = 0
+
+        for metric in user_metrics["metrics"]:
+            if "dailyAverage" in metric:
+                user_daily_average = metric["dailyAverage"]
+            if "weeklyAverage" in metric:
+                user_weekly_average = metric["weeklyAverage"]
+            if "min" in metric:
+                user_min = min(user_min, metric["min"])
+            if "max" in metric:
+                user_max = max(user_max, metric["max"])
+            if "total" in metric:
+                user_total = metric["total"]
+
+        total_daily_average += user_daily_average
+        total_weekly_average += user_weekly_average
+        total_min = min(total_min, user_min)
+        total_max = max(total_max, user_max)
+        total_total += user_total
+
+    if total_users > 0:
+        global_daily_average = total_daily_average / total_users
+        global_weekly_average = total_weekly_average / total_users
+    else:
+        global_daily_average = 0
+        global_weekly_average = 0
+
+    global_metrics = {
+        "dailyAverage": int(global_daily_average),
+        "weeklyAverage": int(global_weekly_average),
+        "min": int(total_min),
+        "max": int(total_max),
+        "total": int(total_total),
+    }
+
+    return global_metrics
 def calculate_user_min(user_id, from_date, to_date):
     user_intervals = user_data_storage.get(user_id, [])
     min_time = float('inf')
