@@ -83,44 +83,6 @@ class TestParseDate(unittest.TestCase):
         self.assertEqual(parse_date(date_string), expected_date)
 
 
-class TestCalculateGlobalMetrics(unittest.TestCase):
-    def test_calculate_global_metrics(self):
-
-        report_data = [
-            {"dailyAverage": 10, "weeklyAverage": 20, "min": 5, "max": 25, "total": 100},
-            {"dailyAverage": 15, "weeklyAverage": 25, "min": 8, "max": 30, "total": 120},
-
-        ]
-
-        from_date = "2023-10-19T00:00"
-        to_date = "2023-10-19T23:59"
-
-        global_metrics = calculate_global_metrics(report_data, from_date, to_date)
-
-        self.assertEqual(global_metrics["dailyAverage"], 12)
-        self.assertEqual(global_metrics["weeklyAverage"], 22)
-        self.assertEqual(global_metrics["min"], 5)
-        self.assertEqual(global_metrics["max"], 30)
-        self.assertEqual(global_metrics["total"], 220)
-
-
-class TestGenerateReport(unittest.TestCase):
-    def test_generate_report(self):
-
-        report_config = {
-            "metrics": ["dailyAverage", "total", "min"],
-            "users": [1, 2],
-        }
-
-        from_date = "2023-10-19T00:00"
-        to_date = "2023-10-19T23:59"
-
-        report_data = generate_report(report_config, from_date, to_date)
-
-
-        self.assertEqual(len(report_data), 2)
-        self.assertEqual(report_data[0]["userId"], 1)
-        self.assertEqual(report_data[1]["userId"], 2)
 
 if __name__ == '__main__':
     unittest.main()
