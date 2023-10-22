@@ -3,7 +3,7 @@ name: Tests
 on:
   push:
     branches:
-      - main  
+      - demo-branch  
 
 jobs:
   test:
@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9.6 
+        python-version: 3.9.4 
 
     - name: Install dependencies
       run: pip install -r requirements.txt
