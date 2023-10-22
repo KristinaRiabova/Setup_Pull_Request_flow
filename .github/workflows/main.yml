@@ -1,0 +1,36 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Check Python version
+      run: python --version 
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9.6 
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Start your application
+      run: python main.py &
+
+    - name: Wait for application to start
+      run: sleep 10
+
+    - name: Run E2E and integration tests
+      run: |
+        pytest integrationTest.py
+        python -m unittest e2e.py
